@@ -13,29 +13,38 @@ I only testd the package in **Python 3** and **macOS**. Some things will not wor
 
 Code examples are shown at the end of this readme file. For an example of a full application that I built using `push2-python` and that allows you to turn your Push2 into a standalone MIDI controller (using a Rapsberry Pi!), check the [Pysha](https://github.com/ffont/pysha) source source code repository.
 
-
 ## Table of Contents
 
 * [Install](#install)
-* [Documentation](#documentation)
-    * [Initializing Push](#initializing-push)
-    * [Setting action handlers for buttons, encoders, pads and the touchstrip](#setting-action-handlers-for-buttons--encoders--pads-and-the-touchstrip)
-    * [Button names, encoder names, pad numbers and coordinates](#button-names--encoder-names--pad-numbers-and-coordinates)
-    * [Set pad and button colors](#set-pad-and-button-colors)
-    * [Interface with the display](#interface-with-the-display)
-    * [Using the simulator](#using-the-simulator)
-* [Code examples](#code-examples)
-    * [Set up handlers for pads, encoders, buttons and the touchstrip...](#set-up-handlers-for-pads-encoders-buttons-and-the-touchstrip)
-    * [Light up buttons and pads](#light-up-buttons-and-pads)
-    * [Interface with the display (static content)](#interface-with-the-display-static-content)
-    * [Interface with the display (dynamic content)](#interface-with-the-display-dynamic-content)
 
+* [Documentation](#documentation)
+  * [Initializing Push](#initializing-push)
+
+  * [Setting action handlers for buttons, encoders, pads and the touchstrip](#setting-action-handlers-for-buttons-encoders-pads-and-the-touchstrip)
+
+  * [Button names, encoder names, pad numbers and coordinates](#button-names-encoder-names-pad-numbers-and-coordinates)
+
+  * [Set pad and button colors](#set-pad-and-button-colors)
+
+  * [Interface with the display](#interface-with-the-display)
+
+  * [Using the simulator](#using-the-simulator)
+
+* [Code examples](#code-examples)
+
+  * [Set up action handlers for pads, encoders, buttons and the touchstrip](#set-up-action-handlers-for-pads-encoders-buttons-and-the-touchstrip)
+
+  * [Light up buttons and pads](#light-up-buttons-and-pads)
+
+  * [Interface with the display (static content)](#interface-with-the-display-static-content)
+
+  * [Interface with the display (dynamic content)](#interface-with-the-display-dynamic-content)
 
 ## Install
 
 You can install using `pip` and pointing at this repository:
 
-```
+```bash
 pip install git+https://github.com/ffont/push2-python
 ```
 
@@ -46,7 +55,7 @@ This will install Python requirements as well. Note however that `push2-python` 
 Well, to be honest there is no proper documentation. However the use of this package is so simple that I hope it's going to be enough with the [code examples below](#code-examples) and the simple notes given here.
 
 ### Initializing Push
- 
+
 To interface with Push2 you'll first need to import `push2_python` and initialize a Python object as follows:
 
 ```python
@@ -84,7 +93,6 @@ to delegate all connection with `push2_python` to a different thread (have not t
 MIDI configuration calls happen in the same thread because of limitations of the `mido` Python MIDI package used by `push2_python`.
 
 **NOTE 2**: The solution above is only needed if you want to support Push2 being powered off when your app starts. After your app connects successfuly with Push2, the recurring check for MIDI configuration would not really be needed because `push2_python` will keep track of MIDI connections using active sensing.
-
 
 ### Setting action handlers for buttons, encoders, pads and the touchstrip
 
@@ -125,7 +133,6 @@ These are all available decorators for setting up action handlers:
 Full documentation for each of these can be found in their docstrings [starting here](https://github.com/ffont/push2-python/blob/master/push2_python/__init__.py#L128). 
 Also have a look at the [code examples](#code-examples) below to get an immediate idea about how it works.
 
-
 ### Button names, encoder names, pad numbers and coordinates
 
 Buttons and encoders can de identified by their name. You can get a list of avialable options for  `button_name` and `encoder_name` by checking the
@@ -155,11 +162,10 @@ You set button colors in a similar way:
 push.buttons.set_button_color(push2_python.constants.BUTTON_PLAY, 'green')
 ```
 
-All pads support RGB colors, and some buttons do as well. However, some buttons only support black and white. Checkout the MIDI mapping diagram in the 
+All pads support RGB colors, and some buttons do as well. However, some buttons only support black and white. Checkout the MIDI mapping diagram in the
 [Push 2 MIDI and Display Interface Manual](https://github.com/Ableton/push-interface/blob/master/doc/AbletonPush2MIDIDisplayInterface.asc#23-midi-mapping) to see which buttons support RGB and which ones only support black and white. In both cases colors are set using the same method, but the list of available colors for black and white buttons is restricted.
 
 For a list of avilable RGB colors check the `DEFAULT_COLOR_PALETTE` dictionary in [push2_python/constants.py](https://github.com/ffont/push2-python/blob/master/push2_python/constants.py). First item of each color entry corresponds to the RGB color name while second item corresponds to the BW color name. The color palette can be customized using the `set_color_palette_entry`, `update_rgb_color_palette_entry` and `reapply_color_palette` of Push2 object. See the documentation of these methods for more details.
-
 
 ### Set pad and button animations
 
@@ -173,7 +179,6 @@ By default, animations are synced to a clock of 120bpm. It is possible to change
 
 For a list of available animations, check the variables names `ANIMATION_*` dictionary in [push2_python/constants.py](https://github.com/ffont/push2-python/blob/master/push2_python/constants.py). Also, see the animations section of the [Push 2 MIDI and Display Interface Manual](https://github.com/Ableton/push-interface/blob/master/doc/AbletonPush2MIDIDisplayInterface.asc#268-led-animation) for more information about animations.
 
-
 ### Adjust pad sensitivity
 
 `push2-python` implements methods to adjust Push2 pads sensitivity, in particualr it incorporates methods to adjust the velocity curve (which applies to
@@ -185,7 +190,6 @@ push.pads.set_channel_aftertouch_range(range_start=401, range_end=800)  # Config
 push.pads.set_velocity_curve(velocities=[int(i * 127/40) if i < 40 else 127 for i in range(0,128)])  # Map full velocity range to the first 40 pressure values
 ```
 
-
 ### Interface with the display
 
 You interface with Push2's display by senidng frames to be display using the `push.display.display_frame` method as follows:
@@ -196,7 +200,7 @@ push.display.display_frame(img_frame, input_format=push2_python.constants.FRAME_
 ```
 
 `img_frame` is expected to by a `numpy` array. Depending on the `input_format` argument, `img_frame` will need to have the following characteristics:
-        
+
 * for `push2_python.constants.FRAME_FORMAT_BGR565`: `numpy` array of shape 910x160 and of type `uint16`. Each `uint16` element specifies rgb 
     color with the following bit position meaning: `[b4 b3 b2 b1 b0 g5 g4 g3 g2 g1 g0 r4 r3 r2 r1 r0]`.
 
@@ -217,22 +221,19 @@ With `push2_python.constants.FRAME_FORMAT_RGB565` we need to convert the frame t
 
 `push2-python` bundles a browser-based Push2 simulator that you can use for doing development while away from your Push. To use the simulator, you just need to initialize `Push2` in the following way:
 
-```
+```python
 push = push2_python.Push2(run_simulator=True)
 ```
 
 And then, while your app is running, point your browser at `localhost:6128`. Here is a screenshot of the simulator in action:
 
-<p align="center">
-<img src="simulator.png" title="push2-python simulator" />
-</p>
+![Screenshot of simulator](simulator.png)
 
 You can customize the port that the simulator uses by passing `simulator_port` argument when initializing `push2_python.Push2`. Note that the **simulator only implements basic functionality** of Push2, and has some important limitations. For instance, the FPS of the display is limited. Also pressing/releasing buttons or pads very fast may result in some cases in "lost" messages. Touchstrip support is not implemented nor pressure sentisitivy in the pads. You can however use the simulator to trigger buttons and pads, rotate and touch/release encoders, show the display and set pad/button colors. Color palettes are updated in the simulator in the same way as these are updated in Push, therefore if using configuring custom color palettes [as described above](#set-pad-and-button-colors), you should see the correct colors in the simulator. Note that the initial color palette (if no custom colors are provided) is very limited and we strongly recommend to always use a custom color palette.
 
-
 ## Code examples
 
-### Set up action handlers for pads, encoders, buttons and the touchstrip...
+### Set up action handlers for pads, encoders, buttons and the touchstrip
 
 ```python
 import push2_python
