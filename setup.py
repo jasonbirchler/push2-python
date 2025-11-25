@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-setup(name='push2-python',
+setup(name='push2python',
       version='0.6',
       description='Utils to interface with Ableton\'s Push 2 from Python',
       url='https://github.com/ffont/push2-python',
